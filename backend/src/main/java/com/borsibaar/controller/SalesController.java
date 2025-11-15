@@ -3,15 +3,12 @@ package com.borsibaar.controller;
 import com.borsibaar.dto.SaleRequestDto;
 import com.borsibaar.dto.SaleResponseDto;
 import com.borsibaar.entity.User;
-import com.borsibaar.repository.UserRepository;
-import com.borsibaar.service.JwtService;
 import com.borsibaar.service.SalesService;
-import io.jsonwebtoken.Claims;
+import com.borsibaar.util.SecurityUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/sales")
@@ -19,28 +16,11 @@ import org.springframework.web.server.ResponseStatusException;
 public class SalesController {
 
     private final SalesService salesService;
-    private final JwtService jwtService;
-    private final UserRepository userRepository;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public SaleResponseDto processSale(@RequestBody @Valid SaleRequestDto request,
-            @CookieValue(name = "jwt", required = false) String token) {
-        User user = authenticateUser(token);
+    public SaleResponseDto processSale(@RequestBody @Valid SaleRequestDto request) {
+        User user = SecurityUtils.getCurrentUser();
         return salesService.processSale(request, user.getId(), user.getOrganizationId());
-    }
-
-    private User authenticateUser(String token) {
-        if (token == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not authenticated");
-        }
-        Claims claims = jwtService.parseToken(token);
-        User user = userRepository.findByEmail(claims.getSubject())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
-
-        if (user.getOrganizationId() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User has no organization");
-        }
-        return user;
     }
 }

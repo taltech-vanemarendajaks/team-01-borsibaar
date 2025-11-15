@@ -2,15 +2,12 @@ package com.borsibaar.controller;
 
 import com.borsibaar.dto.*;
 import com.borsibaar.entity.User;
-import com.borsibaar.repository.UserRepository;
 import com.borsibaar.service.InventoryService;
-import com.borsibaar.service.JwtService;
-import io.jsonwebtoken.Claims;
+import com.borsibaar.util.SecurityUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -20,31 +17,24 @@ import java.util.List;
 public class InventoryController {
 
     private final InventoryService inventoryService;
-    private final JwtService jwtService;
-    private final UserRepository userRepository;
 
     @GetMapping
     public List<InventoryResponseDto> getOrganizationInventory(
-            @RequestParam(required = false) Long categoryId,
-            @CookieValue(name = "jwt", required = false) String token) {
-        User user = authenticateUser(token);
+            @RequestParam(required = false) Long categoryId) {
+        User user = SecurityUtils.getCurrentUser();
         return inventoryService.getByOrganization(user.getOrganizationId(), categoryId);
     }
 
     @GetMapping("/product/{productId}")
-    public InventoryResponseDto getProductInventory(
-            @PathVariable Long productId,
-            @CookieValue(name = "jwt", required = false) String token) {
-        User user = authenticateUser(token);
+    public InventoryResponseDto getProductInventory(@PathVariable Long productId) {
+        User user = SecurityUtils.getCurrentUser();
         return inventoryService.getByProductAndOrganization(productId, user.getOrganizationId());
     }
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public InventoryResponseDto addStock(
-            @RequestBody @Valid AddStockRequestDto request,
-            @CookieValue(name = "jwt", required = false) String token) {
-        User user = authenticateUser(token);
+    public InventoryResponseDto addStock(@RequestBody @Valid AddStockRequestDto request) {
+        User user = SecurityUtils.getCurrentUser();
         System.out.println("Received request: " + request); // DEBUG
         System.out.println("ProductId: " + request.productId()); // DEBUG
         System.out.println("Quantity: " + request.quantity()); // DEBUG
@@ -53,47 +43,26 @@ public class InventoryController {
     }
 
     @PostMapping("/remove")
-    public InventoryResponseDto removeStock(
-            @RequestBody @Valid RemoveStockRequestDto request,
-            @CookieValue(name = "jwt", required = false) String token) {
-        User user = authenticateUser(token);
+    public InventoryResponseDto removeStock(@RequestBody @Valid RemoveStockRequestDto request) {
+        User user = SecurityUtils.getCurrentUser();
         return inventoryService.removeStock(request, user.getId(), user.getOrganizationId());
     }
 
     @PostMapping("/adjust")
-    public InventoryResponseDto adjustStock(
-            @RequestBody @Valid AdjustStockRequestDto request,
-            @CookieValue(name = "jwt", required = false) String token) {
-        User user = authenticateUser(token);
+    public InventoryResponseDto adjustStock(@RequestBody @Valid AdjustStockRequestDto request) {
+        User user = SecurityUtils.getCurrentUser();
         return inventoryService.adjustStock(request, user.getId(), user.getOrganizationId());
     }
 
     @GetMapping("/product/{productId}/history")
-    public List<InventoryTransactionResponseDto> getTransactionHistory(
-            @PathVariable Long productId,
-            @CookieValue(name = "jwt", required = false) String token) {
-        User user = authenticateUser(token);
+    public List<InventoryTransactionResponseDto> getTransactionHistory(@PathVariable Long productId) {
+        User user = SecurityUtils.getCurrentUser();
         return inventoryService.getTransactionHistory(productId, user.getOrganizationId());
     }
 
     @GetMapping("/sales-stats")
-    public List<UserSalesStatsResponseDto> getUserSalesStats(
-            @CookieValue(name = "jwt", required = false) String token) {
-        User user = authenticateUser(token);
+    public List<UserSalesStatsResponseDto> getUserSalesStats() {
+        User user = SecurityUtils.getCurrentUser();
         return inventoryService.getUserSalesStats(user.getOrganizationId());
-    }
-
-    private User authenticateUser(String token) {
-        if (token == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not authenticated");
-        }
-        Claims claims = jwtService.parseToken(token);
-        User user = userRepository.findByEmail(claims.getSubject())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
-
-        if (user.getOrganizationId() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User has no organization");
-        }
-        return user;
     }
 }

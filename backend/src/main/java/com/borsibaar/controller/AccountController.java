@@ -2,23 +2,18 @@ package com.borsibaar.controller;
 
 import com.borsibaar.entity.User;
 import com.borsibaar.repository.UserRepository;
-import com.borsibaar.service.JwtService;
-import io.jsonwebtoken.Claims;
-import org.springframework.http.HttpStatus;
+import com.borsibaar.util.SecurityUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/account")
+@RequiredArgsConstructor
 public class AccountController {
     private final UserRepository userRepository;
-    private final JwtService jwt;
-
-    public AccountController(UserRepository userRepository, JwtService jwt) {
-        this.userRepository = userRepository;
-        this.jwt = jwt;
-    }
 
     public record MeResponse(String email, String name, String role, Long organizationId, boolean needsOnboarding) {
     }
@@ -27,36 +22,30 @@ public class AccountController {
     }
 
     @GetMapping
-    public ResponseEntity<MeResponse> me(@CookieValue(name = "jwt", required = false) String token) {
-        if (token == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        Claims claims = jwt.parseToken(token);
-        User user = userRepository.findByEmail(claims.getSubject()).orElse(null);
-        if (user == null)
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    public ResponseEntity<MeResponse> me() {
+        try {
+            // Allow users without organization (for onboarding check)
+            User user = SecurityUtils.getCurrentUser(false);
 
-        return ResponseEntity.ok(new MeResponse(
-                user.getEmail(),
-                user.getName(),
-                user.getRole() != null ? user.getRole().getName() : null,
-                user.getOrganizationId(),
-                user.getOrganizationId() == null));
+            return ResponseEntity.ok(new MeResponse(
+                    user.getEmail(),
+                    user.getName(),
+                    user.getRole() != null ? user.getRole().getName() : null,
+                    user.getOrganizationId(),
+                    user.getOrganizationId() == null));
+        } catch (ResponseStatusException e) {
+            return ResponseEntity.status(e.getStatusCode()).build();
+        }
     }
 
     @PostMapping("/onboarding")
     @Transactional
-    public ResponseEntity<Void> finish(@CookieValue(name = "jwt", required = false) String token,
-            @RequestBody onboardingRequest req) {
-        if (token == null)
-            return ResponseEntity.status(401).build();
+    public ResponseEntity<Void> finish(@RequestBody onboardingRequest req) {
         if (req.organizationId() == null || !req.acceptTerms())
             return ResponseEntity.badRequest().build();
 
-        Claims claims = jwt.parseToken(token);
-        User user = userRepository.findByEmail(claims.getSubject()).orElse(null);
-        if (user == null)
-            return ResponseEntity.status(401).build();
+        // Allow users without organization (that's the point of onboarding)
+        User user = SecurityUtils.getCurrentUser(false);
 
         // Set org only (idempotent: do nothing if already set)
         if (user.getOrganizationId() == null) {
