@@ -9,7 +9,7 @@ import {
   Plus,
   Search,
   History,
-  User,
+  User, ListFilterPlus, ListPlus,
 } from "lucide-react";
 
 interface InventoryTransactionResponseDto {
@@ -67,6 +67,11 @@ export default function Inventory() {
   });
   const [showCreateProductModal, setShowCreateProductModal] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [showCreateCategoryModal, setShowCreateCategoryModal] = useState(false);
+  const [categoryForm, setCategoryForm] = useState({
+      name: "",
+      dynamicPricing: true,
+  });
   const [productForm, setProductForm] = useState({
     name: "",
     description: "",
@@ -261,11 +266,39 @@ export default function Inventory() {
     }
   };
 
+  const handleAddCategory = async () => {
+    try {
+      const categoryResponse = await fetch("/api/backend/categories", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: categoryForm.name,
+          dynamicPricing: categoryForm.dynamicPricing,
+        }),
+      });
+
+      if (!categoryResponse.ok) {
+        const error = await categoryResponse.json();
+        throw new Error(error.message || "Failed to create category");
+      }
+
+      setShowCreateCategoryModal(false);
+      setCategoryForm({
+          name: "",
+          dynamicPricing: true,
+      });
+      await fetchCategories();
+    } catch (err) {
+      alert(err.message);
+    }
+  }
+
   const closeModals = () => {
     setShowAddModal(false);
     setShowRemoveModal(false);
     setShowAdjustModal(false);
     setShowHistoryModal(false);
+    setShowCreateCategoryModal(false);
     setSelectedProduct(null);
     setFormData({ quantity: "", notes: "", referenceId: "" });
     setTransactionHistory([]);
@@ -334,6 +367,13 @@ export default function Inventory() {
               </h1>
             </div>
             <div className="flex items-center gap-4">
+              <Button
+                  onClick={() => setShowCreateCategoryModal(true)}
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-100 text-black rounded-lg hover:bg-blue-200 transition font-medium"
+              >
+                <ListPlus className="w-4 h-4" />
+                <span className="flex">New Category</span>
+              </Button>
               <Button
                 onClick={() => setShowCreateProductModal(true)}
                 className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium"
@@ -667,6 +707,63 @@ export default function Inventory() {
               Create Product
             </Button>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showCreateCategoryModal} onOpenChange={setShowCreateCategoryModal}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Create New Category</DialogTitle>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1">
+                Category Name *
+              </label>
+              <Input
+                  type="text"
+                  value={categoryForm.name}
+                  onChange={(e) =>
+                      setCategoryForm({
+                        ...categoryForm,
+                        name: e.target.value,
+                      })
+                  }
+                  className="w-full px-3 py-2 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Category name"
+                  required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1">
+                Dynamic Pricing *
+              </label>
+              <Select
+                  value={categoryForm.dynamicPricing ? "enabled" : "disabled"}
+                  onValueChange={(value) =>
+                      setCategoryForm({
+                        ...categoryForm,
+                        dynamicPricing: value === "enabled",
+                      })
+                  }
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select pricing type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="enabled">Enabled</SelectItem>
+                  <SelectItem value="disabled">Disabled</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <Button
+                onClick={handleAddCategory}
+                disabled={
+                  !categoryForm.name
+                }
+                className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-medium disabled:bg-gray-700 disabled:cursor-not-allowed"
+            >
+              Create Category
+            </Button>
+          </DialogHeader>
         </DialogContent>
       </Dialog>
 
