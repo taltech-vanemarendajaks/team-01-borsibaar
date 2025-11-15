@@ -191,7 +191,7 @@ server.forward-headers-strategy=framework
 - ...
 
 ## Things that could be improved
-- Auth check should be done in the filter, not in each controller. Also some endpoints are not protected at all (e.g. /api/category/)
+- Auth check should be done in the filter, not in each controller.
 - Input validation should be implemented in inventory management (e.g. negative prices, empty names, duplicate names, min greater than max, etc.)
 - TypeScript types could be generated/made from backend DTOs, typing should be improved in inventory management and other places as well
 - Some files are quite long, for example inventory/page.tsx could be split into smaller components. Same for POS page.
