@@ -73,6 +73,8 @@ public class SecurityConfig {
                         // Public API endpoints
                         .requestMatchers(HttpMethod.GET, "/api/organizations/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/organizations").permitAll()
+                        // Need to make these public for client page
+                        // TODO: these should not be fully public
                         .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/inventory/**").permitAll()
                         // All other API requests require authentication
