@@ -98,5 +98,3 @@ deploy-job:
   environment:
     name: production
     url: http://$SERVER_IP
-  only:
-    - main
