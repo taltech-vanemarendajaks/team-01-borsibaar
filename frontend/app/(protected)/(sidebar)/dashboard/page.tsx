@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic"; // still opt-out of caching
 
@@ -163,7 +164,7 @@ export default function Dashboard() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <a
+            <Link
               href="/inventory"
               className="block p-4 bg-blue-100 dark:bg-blue-900 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors"
             >
@@ -173,9 +174,9 @@ export default function Dashboard() {
               <p className="text-blue-600 dark:text-blue-300 text-sm">
                 Manage stock levels, add products, and track inventory changes
               </p>
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="/pos"
               className="block p-4 bg-green-100 dark:bg-green-900 rounded-lg hover:bg-green-200 dark:hover:bg-green-800 transition-colors"
             >
@@ -185,7 +186,7 @@ export default function Dashboard() {
               <p className="text-green-600 dark:text-green-300 text-sm">
                 Process sales, manage cart, and handle customer transactions
               </p>
-            </a>
+            </Link>
           </div>
 
           {stationStats.length > 0 && (

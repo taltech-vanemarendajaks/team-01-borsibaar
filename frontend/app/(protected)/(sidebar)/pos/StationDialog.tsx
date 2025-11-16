@@ -76,8 +76,6 @@ export function StationDialog({
       setFormName("");
       setFormDescription("");
       setFormUserIds([]);
-    } catch (err) {
-      // Error handling is done in parent component
     } finally {
       setIsSubmitting(false);
     }

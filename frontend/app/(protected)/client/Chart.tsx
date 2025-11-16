@@ -79,7 +79,7 @@ export default function PriceHistoryGraphFancy({ groups }: { groups: Record<stri
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const historyJson: HistoryDto[] = await res.json();
       setCurrent({ productInv, priceHistory: historyJson });
-    } catch (e: any) {
+    } catch (e) {
       setError(e?.message || "Failed to fetch history");
     }
   }, []);
@@ -126,7 +126,7 @@ export default function PriceHistoryGraphFancy({ groups }: { groups: Record<stri
     const firstBefore = hist.find(h => Number.isFinite(h.before) && h.before !== 0)?.before;
     const base =
       (firstBefore ??
-        (product as any)?.basePrice ??
+        (product)?.basePrice ??
         product.unitPrice ??
         hist[0]?.after ??
         0) as number;
@@ -268,14 +268,14 @@ export default function PriceHistoryGraphFancy({ groups }: { groups: Record<stri
 
     g.append("g")
       .attr("transform", `translate(0,${innerH})`)
-      .call(d3.axisBottom<Date>(x).tickValues(ticks).tickFormat(d => tallinnFmt(d) as any).tickSizeOuter(0))
+      .call(d3.axisBottom<Date>(x).tickValues(ticks).tickFormat(d => tallinnFmt(d)).tickSizeOuter(0))
       .call(s => s.select(".domain").attr("stroke", "rgba(255,255,255,0.08)"))
       .call(s => s.selectAll("text").attr("fill", "#cdd6f4").style("font-size", "12px"))
       .call(s => s.selectAll("line").attr("stroke", "rgba(255,255,255,0.08)"));
 
     // Y axis
     g.append("g")
-      .call(d3.axisLeft<number>(y).ticks(6).tickFormat(v => money.format(Number(v)) as any))
+      .call(d3.axisLeft<number>(y).ticks(6).tickFormat(v => money.format(Number(v))))
       .call(s => s.select(".domain").attr("stroke", "rgba(255,255,255,0.08)"))
       .call(s => s.selectAll("text").attr("fill", "#cdd6f4").style("font-size", "12px"))
       .call(s => s.selectAll("line").attr("stroke", "rgba(255,255,255,0.08)"));
@@ -318,10 +318,10 @@ export default function PriceHistoryGraphFancy({ groups }: { groups: Record<stri
       .y1(d => y(d.price))
       .curve(d3.curveStepAfter);
 
-    g.append("path").datum(windowed).attr("d", area as any).attr("fill", "url(#areaBlue)");
+    g.append("path").datum(windowed).attr("d", area).attr("fill", "url(#areaBlue)");
     g.append("path")
       .datum(windowed)
-      .attr("d", line as any)
+      .attr("d", line)
       .attr("fill", "none")
       .attr("stroke", "#8aa6ff")
       .attr("stroke-width", 2.6)

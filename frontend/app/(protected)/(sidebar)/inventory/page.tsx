@@ -51,7 +51,7 @@ export const dynamic = "force-dynamic";
 export default function Inventory() {
   const [inventory, setInventory] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
   const [showRemoveModal, setShowRemoveModal] = useState(false);
@@ -104,7 +104,11 @@ export default function Inventory() {
       setInventory(data);
       setError(null);
     } catch (err) {
-      setError(err.message);
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unknown error occurred");
+      }
     } finally {
       setLoading(false);
     }
@@ -195,17 +199,27 @@ export default function Inventory() {
         notes: "",
       });
     } catch (err) {
-      alert(err.message);
+      if (err instanceof Error) {
+        alert(err.message);
+      } else {
+        alert("An unknown error occurred");
+      }
     }
   };
 
   const handleAddStock = async () => {
+    if (!selectedProduct) {
+      alert("No product selected");
+      return;
+    }
+
     try {
       const response = await fetch("/api/backend/inventory/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({
+          // @ts-expect-error: types aren't imported currently from backend
           productId: selectedProduct.productId,
           quantity: parseFloat(formData.quantity),
           notes: formData.notes,
@@ -217,7 +231,11 @@ export default function Inventory() {
       await fetchInventory();
       closeModals();
     } catch (err) {
-      alert(err.message);
+      if (err instanceof Error) {
+        alert(err.message);
+      } else {
+        alert("An unknown error occurred");
+      }
     }
   };
 
@@ -228,6 +246,7 @@ export default function Inventory() {
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({
+          // @ts-expect-error: types aren't imported currently from backend
           productId: selectedProduct.productId,
           quantity: parseFloat(formData.quantity),
           referenceId: formData.referenceId,
@@ -243,7 +262,11 @@ export default function Inventory() {
       await fetchInventory();
       closeModals();
     } catch (err) {
-      alert(err.message);
+      if (err instanceof Error) {
+        alert(err.message);
+      } else {
+        alert("An unknown error occurred");
+      }
     }
   };
 
@@ -254,6 +277,7 @@ export default function Inventory() {
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({
+          // @ts-expect-error: types aren't imported currently from backend
           productId: selectedProduct.productId,
           newQuantity: parseFloat(formData.quantity),
           notes: formData.notes,
@@ -265,7 +289,11 @@ export default function Inventory() {
       await fetchInventory();
       closeModals();
     } catch (err) {
-      alert(err.message);
+      if (err instanceof Error) {
+        alert(err.message);
+      } else {
+        alert("An unknown error occurred");
+      }
     }
   };
 
@@ -292,11 +320,15 @@ export default function Inventory() {
       });
       await fetchCategories();
     } catch (err) {
-      alert(err.message);
+      if (err instanceof Error) {
+        alert(err.message);
+      } else {
+        alert("An unknown error occurred");
+      }
     }
   }
 
-  const handleDeleteProduct = async (id) => {
+  const handleDeleteProduct = async (id: string) => {
     if (!id) return;
     try {
       const deleteResponse = await fetch(`/api/backend/product/${id}`, {
@@ -312,7 +344,11 @@ export default function Inventory() {
       setShowDeleteProductModal(false);
       await fetchInventory();
     } catch (err) {
-      alert(err.message);
+      if (err instanceof Error) {
+        alert(err.message);
+      } else {
+        alert("An unknown error occurred");
+      }
     }
   }
 
@@ -329,37 +365,45 @@ export default function Inventory() {
     setLoadingHistory(false);
   };
 
+  // @ts-expect-error: types aren't imported currently from backend
   const openAddModal = (item) => {
     setSelectedProduct(item);
     setShowAddModal(true);
   };
 
+  // @ts-expect-error: types aren't imported currently from backend
   const openDeleteModal = (item) => {
     setSelectedProduct(item);
     setShowDeleteProductModal(true);
   }
 
+  // @ts-expect-error: types aren't imported currently from backend
   const openRemoveModal = (item) => {
     setSelectedProduct(item);
     setShowRemoveModal(true);
   };
 
+  // @ts-expect-error: types aren't imported currently from backend
   const openAdjustModal = (item) => {
     setSelectedProduct(item);
     setFormData({ ...formData, quantity: item.quantity.toString() });
     setShowAdjustModal(true);
   };
 
+  // @ts-expect-error: types aren't imported currently from backend
   const openHistoryModal = async (item) => {
     setSelectedProduct(item);
     setShowHistoryModal(true);
     await fetchTransactionHistory(item.productId);
   };
 
-  const filteredInventory = inventory.filter((item) =>
-    item.productName.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredInventory = inventory.filter((item) => {
+        // @ts-expect-error: types aren't imported currently from backend
+        item.productName.toLowerCase().includes(searchTerm.toLowerCase())
+      }
   );
 
+  // @ts-expect-error: types aren't imported currently from backend
   const getStockStatus = (quantity) => {
     const qty = parseFloat(quantity);
     if (qty === 0)
@@ -467,14 +511,14 @@ export default function Inventory() {
               <tbody>
                 {filteredInventory.length === 0 ? (
                   <tr>
-                    <td colSpan="5" className="text-center py-8 text-gray-400">
+                    <td colSpan={5} className="text-center py-8 text-gray-400">
                       No inventory items found
                     </td>
                   </tr>
                 ) : (
                   filteredInventory.map((item) => {
+                    // @ts-expect-error: types aren't imported currently from backend
                     const status = getStockStatus(item.quantity);
-                    // @ts-ignore
                     return (
                       <tr
                         key={item.id}
