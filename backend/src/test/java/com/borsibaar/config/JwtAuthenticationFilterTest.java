@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
@@ -118,6 +120,19 @@ class JwtAuthenticationFilterTest {
     void testFilter_SkipsOAuth2Endpoints() throws Exception {
         // OAuth2 endpoints should bypass JWT filter
         // These endpoints are handled by Spring Security OAuth2
+
+        // Arrange: Mock Google OAuth2 client registration
+        ClientRegistration googleClient = ClientRegistration.withRegistrationId("google")
+                .clientId("test-client-id")
+                .clientSecret("test-client-secret")
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .redirectUri("http://localhost:3000/login/oauth2/code/google")
+                .authorizationUri("https://accounts.google.com/o/oauth2/v2/auth")
+                .tokenUri("https://oauth2.googleapis.com/token")
+                .clientName("Google")
+                .scope("email")
+                .build();
+        when(clientRegistrationRepository.findByRegistrationId("google")).thenReturn(googleClient);
 
         // Act & Assert: OAuth2 endpoints should redirect to OAuth provider (302)
         mockMvc.perform(get("/oauth2/authorization/google"))
