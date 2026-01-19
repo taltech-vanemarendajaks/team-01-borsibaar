@@ -11,6 +11,7 @@ public class BorsibaarApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BorsibaarApplication.class, args);
+        System.out.println("BorsibaarApplication started");
 	}
 
 }
