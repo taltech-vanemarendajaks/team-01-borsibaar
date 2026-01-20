@@ -42,8 +42,6 @@ cd frontend && npm start
 cd frontend && npm run lint
 ```
 
-
-
 ### Docker usage
 
 ```bash
