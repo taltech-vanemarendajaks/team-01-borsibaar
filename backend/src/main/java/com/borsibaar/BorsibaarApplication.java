@@ -1,4 +1,4 @@
-
+package com.borsibaar;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,9 +9,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class BorsibaarApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(BorsibaarApplication.class, args);
-        System.out.println("BorsibaarApplication started");
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(BorsibaarApplication.class, args);
+    }
 
 }
