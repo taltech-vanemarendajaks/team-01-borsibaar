@@ -4,7 +4,7 @@
 
 -   **Daniil** --- `retr0mouse`
 -   **Katri** --- `katri`
--   **Kenert** --- `Kenert`
+-   **Kenert** --- `karukenert`
 -   **Liisi** --- `liisieenmaa`
 -   **Ivo** --- `ivovaliste`
 
