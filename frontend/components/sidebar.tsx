@@ -49,7 +49,7 @@ function SidebarContentItems() {
         <SidebarMenuItem key={item.title}>
           <SidebarMenuButton asChild size="lg" tooltip={item.title}>
             <a href={item.url} className="flex items-center">
-              <item.icon className="!w-6 !h-6" />
+              <item.icon className="!w-7 !h-7 text-sky-400" />
               {!isCollapsed && (
                 <span className="text-lg font-medium">{item.title}</span>
               )}
