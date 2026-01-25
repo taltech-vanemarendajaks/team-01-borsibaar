@@ -61,7 +61,6 @@ The Spring Boot backend follows a layered architecture:
 * **Mappers** (`mapper/`): MapStruct mappers for entity-DTO conversion
 * **Config** (`config/`): Spring configuration classes
 
-
 Key technologies:
 
 * Spring Security with OAuth2 client
