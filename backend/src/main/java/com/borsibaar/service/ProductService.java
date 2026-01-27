@@ -6,6 +6,7 @@ import com.borsibaar.entity.Category;
 import com.borsibaar.entity.Inventory;
 import com.borsibaar.entity.InventoryTransaction;
 import com.borsibaar.entity.Product;
+import com.borsibaar.exception.BadRequestException;
 import com.borsibaar.mapper.ProductMapper;
 import com.borsibaar.repository.CategoryRepository;
 import com.borsibaar.repository.InventoryRepository;
@@ -35,8 +36,7 @@ public class ProductService {
     @Transactional
     public ProductResponseDto create(ProductRequestDto request, Long orgId) {
         Category cat = categoryRepository.findById(request.categoryId())
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, "Category not found: " + request.categoryId()));
+                .orElseThrow(() -> new BadRequestException("Category not found: " + request.categoryId()));
 
         Product entity = productMapper.toEntity(request);
         entity.setOrganizationId(orgId);
@@ -46,12 +46,12 @@ public class ProductService {
 
         String normalizedName = entity.getName() != null ? entity.getName().trim() : null;
         if (normalizedName == null || normalizedName.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product name must not be blank");
+            throw new BadRequestException("Product name must not be blank");
         }
         entity.setName(normalizedName);
 
         if (!orgId.equals(cat.getOrganizationId())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category does not belong to the organization");
+            throw new BadRequestException("Category does not belong to the organization");
         }
 
         if (productRepository.existsByOrganizationIdAndNameIgnoreCase(orgId, normalizedName)) {

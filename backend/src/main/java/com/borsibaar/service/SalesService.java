@@ -5,10 +5,13 @@ import com.borsibaar.entity.Category;
 import com.borsibaar.entity.Inventory;
 import com.borsibaar.entity.InventoryTransaction;
 import com.borsibaar.entity.Product;
+import com.borsibaar.exception.BadRequestException;
 import com.borsibaar.repository.InventoryRepository;
 import com.borsibaar.repository.InventoryTransactionRepository;
 import com.borsibaar.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,8 +69,7 @@ public class SalesService {
                 }
 
                 if (!product.isActive()) {
-                        throw new ResponseStatusException(
-                                        HttpStatus.BAD_REQUEST, "Product is not active: " + product.getName());
+                        throw new BadRequestException("Product is not active: " + product.getName());
                 }
 
                 // Get inventory for this product
@@ -88,8 +90,7 @@ public class SalesService {
                 BigDecimal newQuantity = oldQuantity.subtract(item.quantity());
 
                 if (newQuantity.compareTo(BigDecimal.ZERO) < 0) {
-                        throw new ResponseStatusException(
-                                        HttpStatus.BAD_REQUEST,
+                        throw new BadRequestException(
                                         "Insufficient stock for " + product.getName() +
                                                         ". Available: " + oldQuantity + ", Requested: "
                                                         + item.quantity());

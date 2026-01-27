@@ -1,6 +1,8 @@
 package com.borsibaar.util;
 
 import com.borsibaar.entity.User;
+import com.borsibaar.exception.BadRequestException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -47,7 +49,7 @@ public class SecurityUtils {
         User user = (User) principal;
 
         if (requireOrganization && user.getOrganizationId() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User has no organization");
+            throw new BadRequestException("User has no organization");
         }
 
         return user;

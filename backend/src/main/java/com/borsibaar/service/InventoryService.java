@@ -6,6 +6,7 @@ import com.borsibaar.entity.Inventory;
 import com.borsibaar.entity.InventoryTransaction;
 import com.borsibaar.entity.Product;
 import com.borsibaar.entity.User;
+import com.borsibaar.exception.BadRequestException;
 import com.borsibaar.mapper.InventoryMapper;
 import com.borsibaar.repository.BarStationRepository;
 import com.borsibaar.repository.InventoryRepository;
@@ -177,8 +178,7 @@ public class InventoryService {
         BigDecimal newQuantity = oldQuantity.subtract(request.quantity());
 
         if (newQuantity.compareTo(BigDecimal.ZERO) < 0) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
+            throw new BadRequestException(
                     "Insufficient stock. Available: " + oldQuantity + ", Requested: "
                             + request.quantity());
         }
