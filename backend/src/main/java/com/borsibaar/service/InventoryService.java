@@ -7,6 +7,7 @@ import com.borsibaar.entity.InventoryTransaction;
 import com.borsibaar.entity.Product;
 import com.borsibaar.entity.User;
 import com.borsibaar.exception.BadRequestException;
+import com.borsibaar.exception.ForbiddenException;
 import com.borsibaar.exception.NotFoundException;
 import com.borsibaar.mapper.InventoryMapper;
 import com.borsibaar.repository.BarStationRepository;
@@ -440,8 +441,7 @@ public class InventoryService {
                 .orElseThrow(() -> new NotFoundException("Product not found"));
 
         if (!product.getOrganizationId().equals(organizationId)) {
-            throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN, "Product does not belong to your organization");
+            throw new ForbiddenException("Product does not belong to your organization");
         }
         if (!product.isActive()) {
             throw new ResponseStatusException(HttpStatus.GONE, "Product is deleted");

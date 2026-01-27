@@ -2,8 +2,9 @@ package com.borsibaar.util;
 
 import com.borsibaar.entity.User;
 import com.borsibaar.exception.BadRequestException;
+import com.borsibaar.exception.ForbiddenException;
+import com.borsibaar.exception.UnauthorizedException;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.server.ResponseStatusException;
@@ -38,12 +39,12 @@ public class SecurityUtils {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not authenticated");
+            throw new UnauthorizedException("Not authenticated");
         }
 
         Object principal = authentication.getPrincipal();
         if (!(principal instanceof User)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid authentication");
+            throw new UnauthorizedException("Invalid authentication");
         }
 
         User user = (User) principal;
@@ -63,7 +64,7 @@ public class SecurityUtils {
      */
     public static void requireAdminRole(User user) {
         if (user.getRole() == null || !"ADMIN".equals(user.getRole().getName())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin role required");
+            throw new ForbiddenException( "Admin role required");
         }
     }
 

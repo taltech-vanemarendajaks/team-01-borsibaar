@@ -6,6 +6,7 @@ import com.borsibaar.entity.Inventory;
 import com.borsibaar.entity.InventoryTransaction;
 import com.borsibaar.entity.Product;
 import com.borsibaar.exception.BadRequestException;
+import com.borsibaar.exception.ForbiddenException;
 import com.borsibaar.exception.NotFoundException;
 import com.borsibaar.repository.InventoryRepository;
 import com.borsibaar.repository.InventoryTransactionRepository;
@@ -13,10 +14,8 @@ import com.borsibaar.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -64,8 +63,7 @@ public class SalesService {
                                 .orElseThrow(() -> new NotFoundException("Product not found: " + item.productId()));
 
                 if (!product.getOrganizationId().equals(organizationId)) {
-                        throw new ResponseStatusException(
-                                        HttpStatus.FORBIDDEN, "Product does not belong to your organization");
+                        throw new ForbiddenException( "Product does not belong to your organization");
                 }
 
                 if (!product.isActive()) {

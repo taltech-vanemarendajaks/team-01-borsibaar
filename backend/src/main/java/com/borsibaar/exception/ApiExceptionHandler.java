@@ -29,6 +29,26 @@ public class ApiExceptionHandler {
                 return problemDetail;
         }
 
+        @ExceptionHandler(UnauthorizedException.class)
+        public ProblemDetail handleUnauthorized(UnauthorizedException exception,
+                        HttpServletRequest request) {
+                return buildProblemDetail(
+                                HttpStatus.UNAUTHORIZED,
+                                "Unauthorized",
+                                exception.getMessage(),
+                                request.getRequestURI());
+        }
+
+        @ExceptionHandler(ForbiddenException.class)
+        public ProblemDetail handleForbidden(ForbiddenException exception,
+                        HttpServletRequest request) {
+                return buildProblemDetail(
+                                HttpStatus.FORBIDDEN,
+                                "Forbidden",
+                                exception.getMessage(),
+                                request.getRequestURI());
+        }
+
         @ExceptionHandler(NotFoundException.class)
         public ProblemDetail handleNotFound(NotFoundException exception,
                         HttpServletRequest request) {
