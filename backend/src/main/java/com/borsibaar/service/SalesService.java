@@ -6,6 +6,7 @@ import com.borsibaar.entity.Inventory;
 import com.borsibaar.entity.InventoryTransaction;
 import com.borsibaar.entity.Product;
 import com.borsibaar.exception.BadRequestException;
+import com.borsibaar.exception.NotFoundException;
 import com.borsibaar.repository.InventoryRepository;
 import com.borsibaar.repository.InventoryTransactionRepository;
 import com.borsibaar.repository.ProductRepository;
@@ -60,8 +61,7 @@ public class SalesService {
                         String saleId, Long barStationId) {
                 // Verify product exists and belongs to organization
                 Product product = productRepository.findById(item.productId())
-                                .orElseThrow(() -> new ResponseStatusException(
-                                                HttpStatus.NOT_FOUND, "Product not found: " + item.productId()));
+                                .orElseThrow(() -> new NotFoundException("Product not found: " + item.productId()));
 
                 if (!product.getOrganizationId().equals(organizationId)) {
                         throw new ResponseStatusException(
@@ -72,18 +72,8 @@ public class SalesService {
                         throw new BadRequestException("Product is not active: " + product.getName());
                 }
 
-                // Get inventory for this product
-                /*
-                 * Inventory inventory = inventoryRepository
-                 * .findByOrganizationIdAndProductId(organizationId, item.productId())
-                 * .orElseThrow(() -> new ResponseStatusException(
-                 * HttpStatus.NOT_FOUND, "No inventory found for product: " +
-                 * product.getName()));
-                 */
                 Inventory inventory = Optional.ofNullable(product.getInventory())
-                                .orElseThrow(() -> new ResponseStatusException(
-                                                HttpStatus.NOT_FOUND,
-                                                "No inventory found for product: " + product.getName()));
+                                .orElseThrow(() -> new NotFoundException("No inventory found for product: " + product.getName()));
 
                 // Check stock availability
                 BigDecimal oldQuantity = inventory.getQuantity();

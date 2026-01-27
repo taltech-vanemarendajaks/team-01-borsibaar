@@ -7,6 +7,7 @@ import com.borsibaar.entity.Inventory;
 import com.borsibaar.entity.InventoryTransaction;
 import com.borsibaar.entity.Product;
 import com.borsibaar.exception.BadRequestException;
+import com.borsibaar.exception.NotFoundException;
 import com.borsibaar.mapper.ProductMapper;
 import com.borsibaar.repository.CategoryRepository;
 import com.borsibaar.repository.InventoryRepository;
@@ -96,8 +97,7 @@ public class ProductService {
     @Transactional(readOnly = true)
     public ProductResponseDto getById(Long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Product not found: " + id));
+                .orElseThrow(() -> new NotFoundException("Product not found: " + id));
 
         ProductResponseDto base = productMapper.toResponse(product);
         String categoryName = categoryRepository.findById(product.getCategoryId())
@@ -118,8 +118,7 @@ public class ProductService {
     @Transactional
     public void delete(Long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Product not found: " + id));
+                .orElseThrow(() -> new NotFoundException("Product not found: " + id));
 
         // Mark as inactive instead of hard delete to preserve inventory history
         product.setActive(false);
