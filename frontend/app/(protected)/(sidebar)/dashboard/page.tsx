@@ -411,7 +411,7 @@ export default function Dashboard() {
               )}
               <button
                 type="submit"
-                className="inline-flex items-center rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+                className="inline-flex items-center rounded bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
                 disabled={saving}
               >
                 {saving ? "Saving..." : "Save Changes"}
