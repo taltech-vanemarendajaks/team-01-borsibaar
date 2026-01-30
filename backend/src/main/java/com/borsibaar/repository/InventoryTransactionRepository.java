@@ -13,26 +13,23 @@ import java.util.Optional;
 public interface InventoryTransactionRepository extends JpaRepository<InventoryTransaction, Long> {
 
     List<InventoryTransaction> findByInventoryIdOrderByCreatedAtDesc(Long inventoryId);
-
-    Optional<InventoryTransaction> findFirstByInventoryIdOrderByCreatedAtDesc(Long inventoryId);
-
-    List<InventoryTransaction> findByReferenceId(String referenceId);
-
     @Query("""
-            SELECT it FROM InventoryTransaction it
-            JOIN Inventory i ON it.inventoryId = i.id
-            WHERE i.organizationId = :organizationId
-            AND it.transactionType = 'SALE'
-            ORDER BY it.createdAt DESC
+             SELECT it FROM InventoryTransaction it
+                JOIN it.inventory i
+                JOIN i.product p
+                WHERE p.organizationId = :organizationId
+                  AND it.transactionType = 'SALE'
+                ORDER BY it.createdAt DESC
             """)
     List<InventoryTransaction> findSaleTransactionsByOrganizationId(@Param("organizationId") Long organizationId);
 
     @Query(value = """
-              SELECT DISTINCT i.organizationId
-              FROM InventoryTransaction it
-              JOIN Inventory i ON i.id = it.inventoryId
-              WHERE it.transactionType = 'SALE'
-                AND it.createdAt >= (CURRENT_TIMESTAMP - 60 SECOND)
+               SELECT DISTINCT p.organizationId
+                  FROM InventoryTransaction it
+                  JOIN it.inventory i
+                  JOIN i.product p
+                  WHERE it.transactionType = 'SALE'
+                    AND it.createdAt >= (CURRENT_TIMESTAMP - 60 SECOND)
             """)
     List<Long> findOrganizationIdsWithSalesInLastMinute();
 }
