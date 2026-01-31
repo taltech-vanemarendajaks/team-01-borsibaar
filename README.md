@@ -1,4 +1,6 @@
-# Iti0302-2025
+# Team 1 fork of Börsibaar application
+
+## Iti0302-2025
 
 ## Project Overview
 
