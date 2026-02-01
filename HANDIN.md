@@ -1,6 +1,21 @@
 # Handin (WIP)
 
-
-- [Add codeowners file](https://github.com/taltech-vanemarendajaks/team-01-borsibaar/pull/2)
-- [Add handin file, inflict a conflict](https://github.com/taltech-vanemarendajaks/team-01-borsibaar/pull/4)
--- [Conflict created to this PR](https://github.com/taltech-vanemarendajaks/team-01-borsibaar/pull/1)
+- add TEAM.md ([#1](https://github.com/taltech-vanemarendajaks/team-01-borsibaar/pull/1))
+  - add TEAM.md
+  - teammembers requested changes(commented) and the code was updated
+  - confliced file was resolved by mergeing new state from main to the given branch
+  - merge done via squashing
+  - merged branch was deleted
+- Add CODEOWNERS file ([#2](https://github.com/taltech-vanemarendajaks/team-01-borsibaar/pull/2))
+  - CODEOWNERS file was added and later modified
+  - PR comments added
+  - merged branch was deleted
+- Add HANDIN.md file, inflict a conflict ([#4](https://github.com/taltech-vanemarendajaks/team-01-borsibaar/pull/4))
+  - create HANDIN.md file
+  - inflict a conflict with first PR
+  - merged branch was deleted
+- Change button color ([#5](https://github.com/taltech-vanemarendajaks/team-01-borsibaar/pull/5))
+- Refactoring ([#6](https://github.com/taltech-vanemarendajaks/team-01-borsibaar/pull/6))
+  - converted back to draft as the work is not finished
+- Additions to HANDIN and TEAM files ([#7](https://github.com/taltech-vanemarendajaks/team-01-borsibaar/pull/7))
+  - merge donw via rebasing
