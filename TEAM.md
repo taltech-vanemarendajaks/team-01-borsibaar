@@ -14,4 +14,4 @@
 
 Our team uses feature branches for major changes, which are merged
 through pull requests after review.\
-Smaller changes can be merged directly into the main branch.
+Smaller changes here mean no behavior changes (docs, comments, formatting, typo fixes)
