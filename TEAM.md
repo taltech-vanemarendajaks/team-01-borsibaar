@@ -1,6 +1,17 @@
-# Lets resolve a conflict
+# Team-01
 
-The sole purpose of this temp file in this branch is to inflict a merge conflict
+## Team Members & GitHub Usernames
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+-   **Daniil** --- `retr0mouse`
+-   **Katri** --- `katri`
+-   **Kenert** --- `karukenert`
+-   **Liisi** --- `liisieenmaa`
+-   **Ivo** --- `ivovaliste`
 
+------------------------------------------------------------------------
+
+## Team Workflow
+
+Our team uses feature branches for major changes, which are merged
+through pull requests after review.\
+Smaller changes here mean no behavior changes (docs, comments, formatting, typo fixes)
