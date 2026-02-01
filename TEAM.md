@@ -1,17 +1,23 @@
 # Team-01
 
-## Team Members & GitHub Usernames
+## Team Members & GH Usernames
 
--   **Daniil** --- `retr0mouse`
--   **Katri** --- `katri`
--   **Kenert** --- `karukenert`
--   **Liisi** --- `liisieenmaa`
--   **Ivo** --- `ivovaliste`
+- **Daniil** --- `retr0mouse`
+- **Katri** --- `katri`
+- **Kenert** --- `karukenert`
+- **Liisi** --- `liisieenmaa`
+- **Ivo** --- `ivovaliste`
 
 ------------------------------------------------------------------------
 
 ## Team Workflow
 
-Our team uses feature branches for major changes, which are merged
-through pull requests after review.\
-Smaller changes here mean no behavior changes (docs, comments, formatting, typo fixes)
+Our team uses feature branches for most changes, which are merged through PRs after review.
+Smaller changes can be merged directly to main if these are not behavioral changes (docs, comments, formatting, typo fixes) - this is also dependent on the GH roles.
+
+A PR requires a minimum of 1 review from a team member. If anyone requests changes to a PR, then a final green light for merge should be given by them as well. A suitable merge strategy will be chosen by the PR author.
+
+## Glossary
+
+- PR - Pull Request
+- GH - GitHub
