@@ -123,7 +123,6 @@ Seed minimal data for:
 - Inventory rows
 - Sample transactions
 
-
 ---
 
 ## 6. Entry and Exit Criteria
@@ -133,6 +132,7 @@ Seed minimal data for:
 - Database starts without errors.
 - Key endpoints and routes are available locally.
 - Team agrees on must-test flows and ownership.
+
 
 ### Exit Criteria
 - All must-test flows executed manually and documented.
