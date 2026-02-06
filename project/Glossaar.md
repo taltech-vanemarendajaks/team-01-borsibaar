@@ -14,19 +14,19 @@
 ## Peamised funktsionaalsused (P1)
 
 1. Sõna ja definitsioon lisamine - kasutaja lisab uue sõna ja selle definitsiooni oma sõnaraamatusse.
-2. Kui kasutaja ise definitsiooni ei lisa, saab ta selle pärida välisest allikast.
-3. Sõnade õppimine (quiz režiim) - kasutaja kinnitab oma õpitud teadmisi läbi Duolingo-laadse liidese. Kasutajale kuvatakse definitsioon ja juhuslikud alternatiivid, mille seast tuleb õige valida.
+2. Sõnade õppimine (quiz režiim) - kasutaja kinnitab oma õpitud teadmisi läbi Duolingo-laadse liidese. Kasutajale kuvatakse definitsioon ja juhuslikud alternatiivid, mille seast tuleb õige valida.
+3. Kui kasutaja ise definitsiooni ei lisa, saab ta selle pärida välisest allikast.
 
 ## Vaated
 
 - Sisselogimise ja registreerimise vaade - oauth2?
-- Kirje lisamine vaade
+- Kirje lisamine/muutmise vaade
 - Kirjete listivaade
 - Quiz režiim vaade
 
 ## Lisanduvad funktsionaalsused
 
-- kirjetele klassifikaatorite lisamine. (et quiz režiimis adekvaatseid alternatiive pakuks, võimaldab ka filtreerimise listivaates)
+- kirjetele klassifikaatorite lisamine. (et quiz režiimis adekvaatseid alternatiive pakuks, võimaldab ka filtreerimise listivaates) - ise kasutaja lisab võib tuleb EKIst juba midagi kaasa?
 - Inglise keele välise andmestiku liidestamine, nt [Wordnik](https://developer.wordnik.com/) või EKI toetab ka midagi?
 - img kirje tüüp
 - PWA
