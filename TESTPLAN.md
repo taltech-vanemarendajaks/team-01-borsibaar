@@ -123,6 +123,7 @@ Seed minimal data for:
 - Inventory rows
 - Sample transactions
 
+
 ---
 
 ## 6. Entry and Exit Criteria
