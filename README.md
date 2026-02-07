@@ -195,3 +195,4 @@ server.forward-headers-strategy=framework
   _Modules: `frontend/app/**`, `frontend/utils/**`, backend DTO packages_
   - TypeScript types are currently hand‑written and can drift out of sync with backend DTOs; there is no code generation or shared contract layer.
   - Introducing generated types from OpenAPI / SpringDoc, or a shared package for DTO interfaces, would reduce duplication and runtime bugs.
+
