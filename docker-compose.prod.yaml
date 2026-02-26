@@ -60,18 +60,19 @@ services:
     image: nginx:alpine
     container_name: borsibaar-nginx
     ports:
-      - "80:80"
-      - "443:443"
+      - "6666:80"
+      # - "443:443" # TLS is terminated in an upper layer
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
-      - ./nginx/ssl:/etc/nginx/ssl:ro
+      # - ./nginx/ssl:/etc/nginx/ssl:ro # TLS is terminated in an upper layer
     depends_on:
       - frontend
       - backend
     restart: unless-stopped
     networks:
       - borsibaar-network
+      - shared-proxy
 
 volumes:
   postgres_data:
@@ -79,3 +80,5 @@ volumes:
 networks:
   borsibaar-network:
     driver: bridge
+  shared-proxy:
+    external: true
