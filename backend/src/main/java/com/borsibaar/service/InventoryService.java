@@ -6,6 +6,9 @@ import com.borsibaar.entity.Inventory;
 import com.borsibaar.entity.InventoryTransaction;
 import com.borsibaar.entity.Product;
 import com.borsibaar.entity.User;
+import com.borsibaar.exception.BadRequestException;
+import com.borsibaar.exception.ForbiddenException;
+import com.borsibaar.exception.NotFoundException;
 import com.borsibaar.mapper.InventoryMapper;
 import com.borsibaar.repository.BarStationRepository;
 import com.borsibaar.repository.InventoryRepository;
@@ -88,13 +91,11 @@ public class InventoryService {
     public InventoryResponseDto getByProductAndOrganization(Long productId, Long organizationId) {
         Inventory inventory = inventoryRepository
                 .findByOrganizationIdAndProductId(organizationId, productId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "No inventory found for this product"));
+                .orElseThrow(() -> new NotFoundException("No inventory found for this product"));
 
         InventoryResponseDto base = inventoryMapper.toResponse(inventory);
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "No product found"));
+                .orElseThrow(() -> new NotFoundException("No product found"));
         if (!product.isActive()) {
             throw new ResponseStatusException(HttpStatus.GONE, "Product is deleted");
         }
@@ -170,15 +171,13 @@ public class InventoryService {
 
         Inventory inventory = inventoryRepository
                 .findByOrganizationIdAndProductId(organizationId, request.productId())
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "No inventory found for this product"));
+                .orElseThrow(() -> new NotFoundException("No inventory found for this product"));
 
         BigDecimal oldQuantity = inventory.getQuantity();
         BigDecimal newQuantity = oldQuantity.subtract(request.quantity());
 
         if (newQuantity.compareTo(BigDecimal.ZERO) < 0) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
+            throw new BadRequestException(
                     "Insufficient stock. Available: " + oldQuantity + ", Requested: "
                             + request.quantity());
         }
@@ -215,8 +214,7 @@ public class InventoryService {
 
         Inventory inventory = inventoryRepository
                 .findByOrganizationIdAndProductId(organizationId, request.productId())
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "No inventory found for this product"));
+                .orElseThrow(() -> new NotFoundException("No inventory found for this product"));
 
         BigDecimal oldQuantity = inventory.getQuantity();
         BigDecimal quantityChange = request.newQuantity().subtract(oldQuantity);
@@ -251,8 +249,7 @@ public class InventoryService {
     public List<InventoryTransactionResponseDto> getTransactionHistory(Long productId, Long organizationId) {
         Inventory inventory = inventoryRepository
                 .findByOrganizationIdAndProductId(organizationId, productId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "No inventory found for this product"));
+                .orElseThrow(() -> new NotFoundException("No inventory found for this product"));
 
         List<InventoryTransaction> transactions = inventoryTransactionRepository
                 .findByInventoryIdOrderByCreatedAtDesc(inventory.getId());
@@ -441,12 +438,10 @@ public class InventoryService {
     private Product getOrganizationProduct(Long organizationId, Long productId) {
         // Verify product exists and belongs to organization
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Product not found"));
+                .orElseThrow(() -> new NotFoundException("Product not found"));
 
         if (!product.getOrganizationId().equals(organizationId)) {
-            throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN, "Product does not belong to your organization");
+            throw new ForbiddenException("Product does not belong to your organization");
         }
         if (!product.isActive()) {
             throw new ResponseStatusException(HttpStatus.GONE, "Product is deleted");
